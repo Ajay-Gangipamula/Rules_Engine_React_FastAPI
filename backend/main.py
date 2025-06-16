@@ -68,3 +68,7 @@ def read_rules(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 @app.post("/apply-rules/")
 def apply_rules(db: Session = Depends(get_db)):
     return crud.apply_rules(db)
+
+@app.delete("/rules/{rule_id}")
+def delete_rule(rule_id: int, db: Session = Depends(get_db)):
+    return crud.delete_rule(db, rule_id)

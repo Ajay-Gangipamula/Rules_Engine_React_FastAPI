@@ -33,3 +33,11 @@ def apply_rules(db: Session):
     
     db.commit()
     return {"message": "Rules applied successfully"}
+
+def delete_rule(db: Session, rule_id: int):
+    rule = db.query(models.Rule).filter(models.Rule.id == rule_id).first()
+    if rule is None:
+        raise HTTPException(status_code=404, detail="Rule not found")
+    db.delete(rule)
+    db.commit()
+    return {"message": "Rule deleted successfully"}

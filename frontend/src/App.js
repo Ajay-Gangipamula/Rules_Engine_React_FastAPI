@@ -50,6 +50,15 @@ function App() {
   fetchTransactions();
   };
 
+  const deleteRule = async (ruleId) => {
+  try {
+    await axios.delete(`http://localhost:8000/rules/${ruleId}`);
+    fetchRules(); // Refresh the rules list after deletion
+  } catch (error) {
+    console.error("Error deleting rule:", error);
+  }
+};
+
   return (
     <div className="App">
       <h1>Fraud Detection Rules Engine</h1>
@@ -69,6 +78,7 @@ function App() {
         {rules.map(rule => (
           <li key={rule.id}>
             {rule.name}: {rule.condition} => {rule.action}
+            <button onClick={() => deleteRule(rule.id)}>Delete</button>
           </li>
         ))}
       </ul>
