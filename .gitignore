@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# SQLite database
+*.db
+
+# Node
+node_modules/
+npm-debug.log
+yarn-error.log
+
+# React build
+/build
+
+# Environment variables
+.env
+
+# IDEs
+.vscode/
+.idea/
+
+# OS generated files
+.DS_Store
+Thumbs.db
