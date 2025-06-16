@@ -20,7 +20,6 @@ app.add_middleware(
 )
 models.Base.metadata.create_all(bind=engine)
 
-
 # Dependency
 def get_db():
     db = SessionLocal()
@@ -43,11 +42,27 @@ def generate_sample_transactions(num_transactions=50):
             "timestamp": timestamp
         }
 
+def create_fresh_sample_data():
+    db = SessionLocal()
+    try:
+        # Clear existing transactions
+        db.query(models.Transaction).delete()
+        db.commit()
+
+        # Generate and add new transactions
+        for transaction in generate_sample_transactions():
+            crud.create_transaction(db, schemas.TransactionCreate(**transaction))
+    finally:
+        db.close()
+
+@app.on_event("startup")
+async def startup_event():
+    create_fresh_sample_data()
+
 @app.post("/generate-sample-data/")
-def create_sample_data(db: Session = Depends(get_db)):
-    for transaction in generate_sample_transactions():
-        crud.create_transaction(db, schemas.TransactionCreate(**transaction))
-    return {"message": "Sample data created"}
+def generate_sample_data(db: Session = Depends(get_db)):
+    create_fresh_sample_data()
+    return {"message": "Fresh sample data created"}
 
 @app.post("/transactions/", response_model=schemas.Transaction)
 def create_transaction(transaction: schemas.TransactionCreate, db: Session = Depends(get_db)):
